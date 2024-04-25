@@ -40,6 +40,40 @@ Assets = {
 font = pygame.font.Font('Fonts/Alternity-8w7J.ttf', 50)
 font2 = pygame.font.SysFont('cursive', 25)
 
+
+def draw_text(text, x, y, color):
+  text_surface = font2.render(text, True, color)
+  win.blit(text_surface, (x, y))
+
+# Intro Screen
+async def intro_screen():
+	running = True
+	player_name = ""
+	while running:
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				running = False
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_RETURN:
+					if not player_name:
+						draw_text("Please enter a name!", WIDTH // 3, HEIGHT // 2, RED)
+					else:
+						running = False  # Exit intro screen
+				elif event.key == pygame.K_BACKSPACE:
+					player_name = player_name[:-1]  # Remove last character from player name
+				else:
+					player_name += event.unicode  # Add character to player name
+
+		win.fill(WHITE)
+		draw_text("Welcome to Tetris!", WIDTH // 3 - 30, HEIGHT // 3, RED)
+		draw_text("Enter your name:", WIDTH // 3 - 50, HEIGHT // 2 - 30, RED)
+		draw_text(player_name, WIDTH // 3, HEIGHT // 2, BLUE)
+		pygame.display.update()
+
+		clock.tick(FPS)
+		await asyncio.sleep(0)
+	return player_name
+
 # OBJECTS ********************************************************************
 
 class Tetramino:
@@ -198,7 +232,6 @@ def load_high_scores():
 			for line in data:
 				name, score = line.strip().split(":")
 				high_scores[name] = int(score)
-				print("Hey", name, high_scores)
 	except FileNotFoundError:
 		print("High scores file not found. Creating a new one...")
 		# Create a new high scores file with default values
@@ -212,14 +245,12 @@ def save_high_scores():
 	with open("high_scores.txt", "w") as file:
 		print("High scores file path:", os.path.abspath("high_scores.txt"))
 		for name, score in high_scores.items():
-			print("Hey", name, score)
 			file.write(f"{name}:{score}\n")
 
 # Update high scores
-def update_high_scores(score):
+def update_high_scores(player_name, score):
 	# If there are no existing high scores, or if the current score is higher than any existing high score
 	if not high_scores or score > max(high_scores.values()):
-		player_name = input("Congratulations! You've set a new high score! Enter your name: ")
 		high_scores[player_name] = score
 		save_high_scores()
 		
@@ -233,6 +264,12 @@ async def main():
 	move_down = False
 	can_move = True
 	high_score_updated = False
+
+	# Get player name
+	player_name = await intro_screen()
+
+	if not player_name:
+		running = False
 
 	while running:
 		win.fill(BLACK)
@@ -321,7 +358,7 @@ async def main():
 		if tetris.gameover:
 			if high_score_updated == False:
 				# Update high scores
-				update_high_scores(tetris.score)
+				update_high_scores(player_name, tetris.score)
 				high_score_updated = True
 
 			rect = pygame.Rect((50, 140, WIDTH-100, HEIGHT-350))
@@ -353,10 +390,15 @@ async def main():
 		#win.blit(levelimg, (10, HEIGHT-30))  # Adjusted position for level
 		win.blit(levelimg, (250-levelimg.get_width()//2, HEIGHT-30))
 
-
+		player_text = "Hello, " + player_name + "!!"
+		player_render = font2.render(player_text, True, RED)
+		player_text_width = player_render.get_width()
+		x_coordinate = (WIDTH - player_text_width) // 2
+		win.blit(player_render, (x_coordinate, HEIGHT-120))
+		
 		if high_scores:
 			score_text = "Highest Score: "
-			for i, (player_name, score) in enumerate(high_scores.items(), start=1):
+			for i, (_, score) in enumerate(high_scores.items(), start=1):
 				score_text += f"{score}"
 				score_render = font2.render(score_text, True, RED)
 				win.blit(score_render, (10, HEIGHT-30))  # Adjusted position for high score below next block
