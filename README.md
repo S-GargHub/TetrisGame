@@ -1,10 +1,6 @@
-# Tetris
+# TetrisGame 
 
-[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/built-with-swag.svg)](https://forthebadge.com)
-[![forthebadge](https://forthebadge.com/images/badges/made-with-python.svg)](https://forthebadge.com)
-
-Tetris is a simple 2D Tetris game made with python and pygame.
+Tetris is a simple 2D Tetris game made with python and pygame. This is built to run the game on web using webassembly.
 
 <p align='center'>
 	<img src='app.png' width=200 height=300>
@@ -18,14 +14,19 @@ Download this project from here [Download Tetris](https://downgit.github.io/#/ho
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install following packages :-
 * Pygame
+* Pygbag
 
 ```bash
 pip install pygame
+pip install pygbag
 ```
 
 ## Usage
 
-Double click the main.py to open the game, The game will start automatically.
+1. Install certificates.command (For Mac: Applications/Python_{version})
+2. python3 -m pygbag Tetris
+3. The game will start running on the localhost:8000, which can be accessed using any browser
+4. Initally a welcome screen, asking for player_name will appear. After entering the player_nmae press enter, and enjoy the game.
 
 Controls:
 * Use Left arrow key to move left and Right arrow key to move right.
@@ -34,9 +35,6 @@ Controls:
 * Use Space to fall at once.
 * Press P to pause or unpause the game.
 * Press Esc to quit the game.
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-Please make sure to update tests as appropriate.
+* Press C to hold a piece. 
+	* If no piece is held currently, the current piece is placed in hold space and new piece is genrated to repalce it.
+	* If a piece is already held, the current piece and the held piece are swapped.
