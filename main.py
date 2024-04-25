@@ -186,14 +186,54 @@ class Tetris:
 
 tetris = Tetris(ROWS, COLS)
 
+
+
+# Define high_scores dictionary
+high_scores = {}
+
+def load_high_scores():
+	try:
+		with open("high_scores.txt", "r") as file:
+			data = file.readlines()
+			for line in data:
+				name, score = line.strip().split(":")
+				high_scores[name] = int(score)
+				print("Hey", name, high_scores)
+	except FileNotFoundError:
+		print("High scores file not found. Creating a new one...")
+		# Create a new high scores file with default values
+		save_high_scores()
+	except Exception as e:
+		print(f"An error occurred while loading high scores: {e}")
+
+
+# Save high scores to a file
+def save_high_scores():
+	with open("high_scores.txt", "w") as file:
+		print("High scores file path:", os.path.abspath("high_scores.txt"))
+		for name, score in high_scores.items():
+			print("Hey", name, score)
+			file.write(f"{name}:{score}\n")
+
+# Update high scores
+def update_high_scores(score):
+	# If there are no existing high scores, or if the current score is higher than any existing high score
+	if not high_scores or score > max(high_scores.values()):
+		player_name = input("Congratulations! You've set a new high score! Enter your name: ")
+		high_scores[player_name] = score
+		save_high_scores()
+		
+
+# Load high scores at the beginning of the game
+load_high_scores()
+
 async def main():
 	running = True
 	counter = 0
 	move_down = False
 	can_move = True
+	high_score_updated = False
 
-	if not player_name:
-		running = False
 	while running:
 		win.fill(BLACK)
 
@@ -279,6 +319,11 @@ async def main():
 
 		# GAMEOVER ***************************************************************
 		if tetris.gameover:
+			if high_score_updated == False:
+				# Update high scores
+				update_high_scores(tetris.score)
+				high_score_updated = True
+
 			rect = pygame.Rect((50, 140, WIDTH-100, HEIGHT-350))
 			pygame.draw.rect(win, BLACK, rect)
 			pygame.draw.rect(win, RED, rect, 2)
@@ -307,6 +352,19 @@ async def main():
 		win.blit(scoreimg, (250-scoreimg.get_width()//2, HEIGHT-110))
 		#win.blit(levelimg, (10, HEIGHT-30))  # Adjusted position for level
 		win.blit(levelimg, (250-levelimg.get_width()//2, HEIGHT-30))
+
+
+		if high_scores:
+			score_text = "Highest Score: "
+			for i, (player_name, score) in enumerate(high_scores.items(), start=1):
+				score_text += f"{score}"
+				score_render = font2.render(score_text, True, RED)
+				win.blit(score_render, (10, HEIGHT-30))  # Adjusted position for high score below next block
+		else:
+			# No high scores yet
+			no_scores_text = font2.render("No high scores yet", True, RED)
+			win.blit(no_scores_text, (10, HEIGHT-30))  # Adjusted position for high score below next block
+
 
 		pygame.draw.rect(win, BLUE, (0, 0, WIDTH, HEIGHT - 120), 2)
 		clock.tick(FPS)
