@@ -6,10 +6,6 @@ Tetris is a simple 2D Tetris game made with python and pygame. This is built to 
 	<img src='app.png' width=200 height=300>
 </p>
 
-## How to Download
-
-Download this project from here [Download Tetris](https://downgit.github.io/#/home?url=https://github.com/pyGuru123/Python-Games/tree/master/Tetris)
-
 ## Requirements
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install following packages :-
@@ -38,3 +34,6 @@ Controls:
 * Press C to hold a piece. 
 	* If no piece is held currently, the current piece is placed in hold space and new piece is genrated to repalce it.
 	* If a piece is already held, the current piece and the held piece are swapped.
+
+ ## Deployment
+ * The code is deployed on S3 using statuc webhosting. 
