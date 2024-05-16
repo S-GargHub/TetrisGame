@@ -38,5 +38,5 @@ Controls:
  ## Deployment
  * The code is deployed on S3 using statuc webhosting.
 
-Note: Game code taken from https://github.com/riush03/Python-Games
+Note: Game code taken from [https://github.com/riush03/Python-Games](https://github.com/riush03/Python-Games/tree/master/Tetris)
 
