@@ -36,4 +36,7 @@ Controls:
 	* If a piece is already held, the current piece and the held piece are swapped.
 
  ## Deployment
- * The code is deployed on S3 using statuc webhosting. 
+ * The code is deployed on S3 using statuc webhosting.
+
+Note: Game code taken from https://github.com/riush03/Python-Games
+
